@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College and Department Selection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        select, input {
+            margin: 10px 0;
+            padding: 8px;
+            width: 200px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .form-container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            select, input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>College and Department Selection</h1>
+
+    <div class="form-container">
+        <!-- Selection for College Code -->
+        <div class="form-group">
+            <label for="collegeCode">College Code:</label>
+            <select id="collegeCode" onchange="fetchDepartments()">
+                <option value="">Select College Code</option>
+                <!-- Example options, should be dynamically populated -->
+                <option value="2027">2027 - Kongu Engineering College</option>
+                <option value="2028">2028 - XYZ Engineering College</option>
+            </select>
+        </div>
+
+        <!-- Selection for Department -->
+        <div class="form-group">
+            <label for="department">Department:</label>
+            <select id="department">
+                <option value="">Select Department</option>
+                <!-- Example options, should be dynamically populated -->
+            </select>
+        </div>
+
+        <!-- Input Boxes for Categories -->
+        <div class="form-group">
+            <label for="oc">OC:</label>
+            <input type="number" id="oc" placeholder="Enter OC count" min="0">
+        </div>
+        <div class="form-group">
+            <label for="bc">BC:</label>
+            <input type="number" id="bc" placeholder="Enter BC count" min="0">
+        </div>
+        <div class="form-group">
+            <label for="bcm">BCM:</label>
+            <input type="number" id="bcm" placeholder="Enter BCM count" min="0">
+        </div>
+        <div class="form-group">
+            <label for="mbc">MBC:</label>
+            <input type="number" id="mbc" placeholder="Enter MBC count" min="0">
+        </div>
+        <div class="form-group">
+            <label for="sc">SC:</label>
+            <input type="number" id="sc" placeholder="Enter SC count" min="0">
+        </div>
+        <div class="form-group">
+            <label for="sca">SCA:</label>
+            <input type="number" id="sca" placeholder="Enter SCA count" min="0">
+        </div>
+
+        <button onclick="updateReservationData()">Update Reservation Data</button>
+    </div>
+
+    <script>
+        // Fetch the list of college codes from the database
+        function fetchCollegeCodes() {
+            fetch('/api/auth/collegecodes')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Failed to fetch college codes. Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("College codes fetched:", data);
+        const collegeCodeSelect = document.getElementById('collegeCode');
+        data.forEach(college => {
+            const option = document.createElement('option');
+            option.value = college.collegeCode;
+            option.textContent = `${college.collegeCode} - ${college.collegeName}`;
+            collegeCodeSelect.appendChild(option);
+        });
+    })
+    .catch(error => console.error('Error fetching college codes:', error));
+
+        }
+
+        
+        
+
+        // Fetch the list of departments based on the selected college code
+        function fetchDepartments() {
+            const collegeCode = document.getElementById('collegeCode').value;
+            const departmentSelect = document.getElementById('department');
+        
+            departmentSelect.innerHTML = '<option value="">Select Department</option>';
+        
+            if (collegeCode) {
+                fetch(`/api/auth/departments?collegeCode=${collegeCode}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch departments');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        Object.keys(data).forEach(departmentCode => {
+                            const option = document.createElement('option');
+                            option.value = departmentCode;
+                            option.textContent = `${departmentCode} (Intake: ${data[departmentCode]})`; // Show intake count
+                            departmentSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching departments:', error));
+            }
+        }
+        
+
+        function updateReservationData() {
+            const collegeCode = document.getElementById('collegeCode').value;
+            const department = document.getElementById('department').value;
+        
+            if (collegeCode && department) {
+                // Collect the updated reservation data from the input fields
+                const updatedData = {
+                    OC: parseInt(document.getElementById('oc').value) || 0,
+                    BC: parseInt(document.getElementById('bc').value) || 0,
+                    BCM: parseInt(document.getElementById('bcm').value) || 0,
+                    MBC: parseInt(document.getElementById('mbc').value) || 0,
+                    SC: parseInt(document.getElementById('sc').value) || 0,
+                    SCA: parseInt(document.getElementById('sca').value) || 0,
+                };
+        
+                // Send the data to the backend using PUT
+                fetch(`/api/auth/reservation-data?collegeCode=${collegeCode}&department=${department}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updatedData),
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to update reservation data');
+                        }
+                        return response.json(); // Parse response as JSON
+                    })
+                    .then(data => {
+                        console.log('Reservation data updated successfully:', data);
+                        alert(data.message); // Use JSON response message
+                    })
+                    .catch(error => console.error('Error updating reservation data:', error));
+            } else {
+                alert('Please select both college code and department.');
+            }
+        }
+        
+        // Initialize the page by fetching college codes
+        fetchCollegeCodes();
+    </script>
+</body>
+</html>

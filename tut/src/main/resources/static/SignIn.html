@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+    <script>
+        async function verifying(event) {
+            event.preventDefault(); // Prevent default form submission
+            
+            const email = document.getElementById("email").value; // Get email value
+            const password = document.getElementById("password").value; // Get password value
+
+            const data = {
+                email: email,
+                password: password
+            };
+
+            try {
+                const response = await fetch("/api/auth/signin", {
+                    method: "POST", // Correct HTTP method
+                    headers: {
+                        "Content-Type": "application/json" // Correct header name and value
+                    },
+                    body: JSON.stringify(data) // Send data as JSON string
+                });
+
+                if (response.ok) {
+                    const message = await response.text(); // Get the response message
+                    if (message === "Login successful!") {
+                        alert(message);
+                        localStorage.setItem("email",email);
+                        window.location.href = "ckl.html"; // Redirect only if login is successful
+                    } else {
+                        alert(message); // Show error message for invalid credentials
+                    }
+                } else {
+                    alert("Sign In failed: Server returned an error.");
+                }
+            } catch (error) {
+                console.error("Error during Sign In:", error);
+                alert("An unexpected error occurred. Please try again.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <form method="POST" onsubmit="verifying(event)">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Sign In</button>
+    </form>
+    <p>If you do not have an account, <a href="SignUp.html">Sign Up</a></p>
+</body>
+</html>

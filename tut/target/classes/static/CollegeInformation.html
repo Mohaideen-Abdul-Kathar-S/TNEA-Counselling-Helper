@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            margin: 0;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            form {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 20px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>College Information Form</h1>
+
+    <form method="POST" onsubmit="Informations(event)">
+        <label for="collegeCode">College Code: </label>
+        <input type="text" id="collegeCode" name="collegeCode" required placeholder="Enter College Code"><br>
+
+        <label for="hostel">Hostel Rating (1-10): </label>
+        <input type="number" id="hostel" name="hostel" min="1" max="10" placeholder="Rate Hostel"><br>
+
+        <label for="labs">Labs Rating (1-10): </label>
+        <input type="number" id="labs" name="labs" min="1" max="10" placeholder="Rate Labs"><br>
+
+        <label for="infrastructures">Infrastructure Rating (1-10): </label>
+        <input type="number" id="infrastructures" name="infrastructures" min="1" max="10" placeholder="Rate Infrastructure"><br>
+
+        <label for="nba">NBA Accreditation: </label>
+        <select id="nba" name="nba" required>
+            <option value="">Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select><br>
+
+        <label for="naac">NAAC Grade: </label>
+        <select id="naac" name="naac" required>
+            <option value="">Select</option>
+            <option value="A++">A++</option>
+            <option value="A+">A+</option>
+            <option value="A">A</option>
+            <option value="B+">B+</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+        </select><br>
+
+        <label for="nirf">NIRF Rank: </label>
+        <input type="number" id="nirf" name="nirf" placeholder="Enter NIRF Rank"><br>
+
+        <label for="link">College Website: </label>
+        <input type="text" id="link" name="link" placeholder="Enter College Website"><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+    function Informations(event) {
+        event.preventDefault();
+    
+        const data = {};
+        const fields = ["collegeCode", "hostel", "labs", "infrastructures", "nba", "naac", "nirf", "link"];
+    
+        fields.forEach((field) => {
+            const value = document.getElementById(field).value;
+            if (value) {
+                if (field === "nba") {
+                    // Convert "Yes" to true and "No" to false
+                    data[field] = value === "Yes" ? true : false;
+                } else {
+                    data[field] = isNaN(value) ? value : parseInt(value);
+                }
+            }
+        });
+    
+        console.log(data); // Debugging: view the sent data
+    
+        fetch("/api/auth/update", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        })
+            .then((response) => response.text())
+            .then((result) => {
+                alert(result.message || "Data updated successfully!");
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert("An error occurred while updating data.");
+            });
+    }
+    </script>
+    
+</body>
+</html>
