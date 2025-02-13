@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Details</title>
+    <style>
+        body {
+            font-family: "Poppins", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #e3f2fd, #90caf9);
+            color: #333;
+        }
+
+        header {
+            background-color: #0d47a1;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        main {
+            padding: 20px;
+            max-width: 900px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #0d47a1;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 18px;
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #0d47a1;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background: #0d47a1;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #1565c0;
+        }
+
+        .info {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            background-color: #e3f2fd;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .info h2 {
+            color: #0d47a1;
+            margin-top: 0;
+            font-size: 24px;
+        }
+
+        .info p {
+            margin: 10px 0;
+            line-height: 1.6;
+            font-size: 16px;
+            color: #444;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #0d47a1;
+            color: white;
+            font-size: 14px;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Styling for the table outside the frame */
+        .table-container {
+            margin: 40px auto;
+            width: 90%;
+            max-width: 1200px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        th {
+            background-color: #0d47a1;
+            color: white;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tbody tr:hover {
+            background-color: #e8f0ff;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            select, button {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .info p {
+                font-size: 14px;
+            }
+
+            table th, table td {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+
+        .table-container {
+            margin: 40px auto;
+            width: 90%;
+            max-width: 1200px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            display: none; /* Initially hidden */
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        th {
+            background-color: #0d47a1;
+            color: white;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tbody tr:hover {
+            background-color: #e8f0ff;
+        }
+
+       
+    </style>
+</head>
+<body>
+    <header>
+        College Information Portal
+    </header>
+    <button onclick="goBack()" class="btn mt-3" style="width: 150px; background-color: red; color: white; border: none; padding: 10px; border-radius: 5px;">
+        Back
+    </button>
+    <main>
+        <h1>College Overview</h1>
+
+        <form id="collegeForm">
+            <label for="collegeCodeSelect">Select College Code:</label>
+            <select id="collegeCodeSelect" name="collegeCode" required>
+                <option value="" disabled selected>Loading...</option>
+            </select>
+            <button type="submit">View Details</button>
+        </form>
+
+        <div class="info" id="collegeDetails">
+            <h2>College Overview</h2>
+            <p><strong>College Code:</strong> <span id="displayCollegeCode"></span></p>
+            <p><strong>College Name:</strong> <span id="collegeName"></span></p>
+            <p><strong>Status:</strong> <span id="status"></span></p>
+            <p><strong>Website:</strong> <a id="collegeLink" href="#" target="_blank">Visit College Website</a></p>
+            <p><strong>NIRF Rank:</strong> <span id="nirfRank"></span></p>
+            <p><strong>NBA Accreditation:</strong> <span id="nba"></span></p>
+            <p><strong>NAAC Grade:</strong> <span id="naac"></span></p>
+            <p><strong>Hostel Facilities:</strong> <span id="hostel"></span></p>
+            <p><strong>Lab Facilities:</strong> <span id="labs"></span></p>
+            <p><strong>Infrastructure Rating:</strong> <span id="infrastructures"></span></p>
+        </div>
+    </main>
+
+    <!-- Department and Community Table Outside the Main Frame -->
+    <div class="table-container" id="departmentCommunityTable">
+        <h2>Departments & Community Cut-Off</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Department</th>
+                    <th>Intake</th>
+                    <th>SC</th>
+                    <th>SCA</th>
+                    <th>BC</th>
+                    <th>OC</th>
+                    <th>BCM</th>
+                    <th>MBC</th>
+                </tr>
+            </thead>
+            <tbody id="communityDetails"></tbody>
+        </table>
+    </div>
+    
+    <table id="studentTable">
+        <thead>
+            <tr>
+                <th>Student List</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be inserted here -->
+        </tbody>
+    </table>
+
+    
+    <footer>
+        © 2025 College Info Portal. All Rights Reserved.
+    </footer>
+
+
+
+    <script>
+        const email = localStorage.getItem("email");
+        // Fetch college codes for the dropdown
+        async function fetchCollegeCodes() {
+            try {
+                const response = await fetch('/api/auth/collegecodes'); // Replace with your API
+                if (!response.ok) throw new Error('Failed to fetch college codes');
+                const data = await response.json();
+                
+                const collegeCodeSelect = document.getElementById('collegeCodeSelect');
+                data.forEach(college => {
+                    const option = document.createElement('option');
+                    option.value = college.collegeCode;
+                    option.textContent = `${college.collegeCode} - ${college.collegeName}`;
+                    collegeCodeSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error fetching college codes:', error);
+            }
+        }
+
+        // Fetch and display college details
+        async function fetchCollegeDetails(collegeCode) {
+            try {
+                const response = await fetch(`/api/auth/college?code=${collegeCode}`); // Replace with your API
+                if (!response.ok) throw new Error('Failed to fetch college details');
+                const data = await response.json();
+                console.log(data);
+                // Populate college details
+                document.getElementById('displayCollegeCode').textContent = collegeCode;
+                document.getElementById('collegeName').textContent = data.collegeName;
+                document.getElementById('status').textContent = data.status;
+                document.getElementById("collegeLink").href = data.link;  // Set the link's URL
+                document.getElementById("collegeLink").textContent = data.link; 
+                document.getElementById('nirfRank').textContent = data.nirf;
+                document.getElementById('nba').textContent = data.nba;
+                document.getElementById('naac').textContent = data.naac;
+                document.getElementById('hostel').textContent = data.hostel;
+                document.getElementById('labs').textContent = data.labs;
+                document.getElementById('infrastructures').textContent = data.infrastructures;
+
+                document.getElementById('departmentCommunityTable').style.display = 'block';
+
+
+                // Populate community details table
+                const communityDetails = document.getElementById('communityDetails');
+                communityDetails.innerHTML = ''; // Clear previous entries
+                Object.keys(data.community).forEach(department => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${department}</td>
+                        <td>${data.arr[department] || 0}</td>
+                        <td>${data.community[department].SC || 0}</td>
+                        <td>${data.community[department].SCA || 0}</td>
+                        <td>${data.community[department].BC || 0}</td>
+                        <td>${data.community[department].OC || 0}</td>
+                        <td>${data.community[department].BCM || 0}</td>
+                        <td>${data.community[department].MBC || 0}</td>
+                    `;
+                    communityDetails.appendChild(row);
+                });
+                console.log(data.students);//studnets is the array
+               
+                // Show the details section
+                document.getElementById('collegeDetails').style.display = 'block';
+
+                const tableBody = document.querySelector("#studentTable tbody");
+                tableBody.innerHTML = ""; // Clear previous entries
+    
+                data.students.forEach(student => {
+                    const row = `<tr>
+                                    
+                                    <td><a onclick="msgs('${student}')">${student}</a></td>
+                                 </tr>`;
+                    tableBody.innerHTML += row;
+                });
+                
+            } catch (error) {
+                console.error('Error fetching college details:', error);
+            }
+        }
+
+        // Initialize dropdown on page load
+        document.addEventListener('DOMContentLoaded', fetchCollegeCodes);
+
+        // Handle form submission
+        document.getElementById('collegeForm').addEventListener('submit', event => {
+            event.preventDefault();
+            const selectedCode = document.getElementById('collegeCodeSelect').value;
+            fetchCollegeDetails(selectedCode);
+        });
+        function msgs(student){
+          
+            localStorage.setItem("student", student);
+            localStorage.setItem("email", email);
+            
+            window.location.href = "msgSys.html";
+        }
+        function goBack() {
+            window.location.href = "/ckl.html";
+        }
+
+        
+        
+
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message System</title>
+</head>
+<body>
+
+    <h2>Messaging System</h2>
+    <button onclick="addFrd()">Add Friend</button>
+    <div id="messages"></div>
+
+    <input type="text" id="messageInput" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        const sender = localStorage.getItem("email");
+        const receiver = localStorage.getItem("student");
+        console.log(sender);
+        console.log(receiver);
+
+        function fetchMessages() {
+            fetch(`/api/auth/get?sender=${sender}&receiver=${receiver}`)
+                .then(response => response.json())
+                .then(messages => {
+                    const messageBox = document.getElementById("messages");
+                    messageBox.innerHTML = '';
+                    Object.entries(messages).forEach(([user, msg]) => {
+                        const div = document.createElement("div");
+                        div.textContent = `${user}: ${msg}`;
+                        messageBox.appendChild(div);
+                    });
+                });
+        }
+
+        function sendMessage() {
+            const messageContent = document.getElementById("messageInput").value;
+            fetch(`/api/auth/send?sender=${sender}&receiver=${receiver}&message=${messageContent}`, {
+                method: 'POST'
+            }).then(() => {
+                document.getElementById("messageInput").value = '';
+                fetchMessages();
+            });
+        }
+
+        
+        function addFrd() {
+             // Example receiver email
+        
+            // Send POST request to backend to add the friend
+            fetch(`/api/auth/addFrd?email=${sender}&frd=${receiver}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => {
+                // If response is not ok (e.g., 404 or 400), throw an error
+                if (!response.ok) {
+                    throw new Error('Failed to add friend: ' + response.statusText);
+                }
+                return response.text(); // Read the response body as text
+            })
+            .then(data => {
+                console.log("Friend added successfully:", data);
+                alert("Friend added successfully!");
+            })
+            .catch(error => {
+                console.error("Error adding friend:", error);
+                alert("Failed to add friend.");
+            });
+        }
+        
+
+        fetchMessages();
+    </script>
+
+</body>
+</html>

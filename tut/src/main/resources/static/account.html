@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Account | TNEA Counselling Helper</title>
+    <link rel="stylesheet" href="styles.css"> <!-- External CSS -->
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 50px;
+    }
+    .upload-btn {
+        background-color: blue;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 5px;
+    }
+    .upload-btn:disabled {
+        background-color: gray;
+        cursor: not-allowed;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 15px;
+        border: 1px solid #ddd;
+        text-align: center;
+        font-size: 18px;
+    }
+
+    th {
+        background-color: #0d47a1;
+        color: white;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    tbody tr:hover {
+        background-color: #e8f0ff;
+    }
+    
+</style>
+<body>
+
+    <h2>User Account</h2>
+    <div id="user-info">
+        <p><strong>Name:</strong> <span id="display-name">Loading...</span></p>
+        <p><strong>DOB:</strong> <span id="display-dob">Loading...</span></p>
+        <p><strong>Address:</strong> <span id="display-address">Loading...</span></p>
+        <p><strong>Gender:</strong> <span id="display-gender">Loading...</span></p>
+        <p><strong>Studied Group:</strong> <span id="display-group">Loading...</span></p>
+        <button onclick="openUpdateForm()" class="btn-update">Update</button>
+    </div>
+    <h2>Upload the Confirmation Allotment Order</h2>
+    
+    <input type="file" id="pdfInput" accept="application/pdf" hidden>
+    <button class="upload-btn" id="uploadBtn" onclick="document.getElementById('pdfInput').click()">Upload PDF</button>
+
+
+    <script>
+        
+    </script>
+
+   
+
+    <h3>----------------</h3>
+    <table id="studentTable">
+        <thead>
+            <tr>
+                <th>Friends List</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    
+
+    <!-- Update Modal -->
+    <div id="update-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeUpdateForm()">&times;</span>
+            <h3>Update User Details</h3>
+            <form id="update-form">
+                <label for="name">Name:</label>
+                <input type="text" id="name" required>
+
+                <label for="dob">Date of Birth:</label>
+                <input type="date" id="dob" required>
+
+                <label for="address">Address:</label>
+                <input type="text" id="address" required>
+
+                <label>Gender:</label>
+                <select id="gender" required>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+
+                <label>Studied Group:</label>
+                <select id="group" required>
+                    <option value="CS">Computer Science</option>
+                    <option value="Bio Maths">Biology + Maths</option>
+                    <option value="Vocational">Vocational</option>
+                    <option value="Diploma">Diploma</option>
+                </select>
+
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", loadUserData);
+        const email = localStorage.getItem("email");
+async function loadUserData() {
+    try {
+        const email = localStorage.getItem("email");
+        console.log(email); 
+        const response = await fetch(`api/auth/user/data?email=${email}`, { // Using query parameters
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error("User not found");
+        }
+
+        const data = await response.json();
+        console.log(data);
+        
+        const user = data.user;
+        const friends = data.friends;
+        
+        document.getElementById("display-name").textContent = user.name || "N/A";
+        document.getElementById("display-dob").textContent = user.dob || "N/A";
+        document.getElementById("display-address").textContent = user.address || "N/A";
+        document.getElementById("display-gender").textContent = user.gender || "N/A";
+        document.getElementById("display-group").textContent = user.group || "N/A";
+
+        document.getElementById("name").value = user.name;
+        document.getElementById("dob").value = new Date(user.dob).toISOString().split("T")[0];
+        document.getElementById("address").value = user.address;
+        document.getElementById("gender").value = user.gender;
+        document.getElementById("group").value = user.group;
+
+        // Friends List Update
+       
+
+const tableBody = document.querySelector("#studentTable tbody");
+tableBody.innerHTML = ""; // Clear previous entries
+
+user.friends.forEach(student => {
+    const row = document.createElement("tr"); // Create a new row element
+    const cell = document.createElement("td"); // Create a new cell element
+    
+    const link = document.createElement("a"); // Create an anchor link
+    link.textContent = student; // Set the text of the link
+    link.setAttribute("onclick", `msgs('${student}')`); // Add the onclick event
+
+    cell.appendChild(link); // Add the link to the cell
+    row.appendChild(cell); // Add the cell to the row
+    tableBody.appendChild(row); // Add the row to the table body
+});
+
+
+    } catch (error) {
+        console.error("Error loading user data:", error);
+    }
+}
+
+document.getElementById("update-form").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const email = localStorage.getItem("email");
+    const updatedUser = {
+        email:email,
+        name: document.getElementById("name").value.trim(),
+        dob: document.getElementById("dob").value.trim(),
+        address: document.getElementById("address").value.trim(),
+        gender: document.getElementById("gender").value.trim(),
+        group: document.getElementById("group").value.trim()
+    };
+    console.log(updatedUser);
+   
+        try {
+            const response = await fetch(`api/auth/user/update`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updatedUser),
+            });
+    
+            if (response.ok) {
+                alert("User details updated successfully!");
+                closeUpdateForm();
+                loadUserData();
+            } else {
+                alert("Failed to update user details.");
+            }
+        } catch (error) {
+            console.error("Error updating user:", error);
+        }
+    
+    
+});
+
+// Modal Functions
+function openUpdateForm() {
+    document.getElementById("update-modal").style.display = "block";
+}
+
+function closeUpdateForm() {
+    document.getElementById("update-modal").style.display = "none";
+}
+
+document.getElementById('pdfInput').addEventListener('change', async function(event) {
+    const file = event.target.files[0];
+
+    if (file && file.type === "application/pdf") {
+        let formData = new FormData();
+        formData.append("file", file);
+        const email = localStorage.getItem("email");
+        try {
+            const response = await fetch(`api/auth/upload?email=${email}`, {
+                method: "POST",
+                body: formData
+            });
+
+            if (response.ok) {
+                alert("PDF uploaded successfully!");
+                document.getElementById('uploadBtn').disabled = true; // Disable button
+            } else {
+                alert("Upload failed!");
+            }
+        } catch (error) {
+            console.error("Error uploading PDF:", error);
+        }
+    } else {
+        alert("Please upload a valid PDF file.");
+    }
+});
+function msgs(student){
+    console.log(`Message function called for: ${student}`);
+    localStorage.setItem("student", student);
+    localStorage.setItem("email", email);
+    
+    window.location.href = "msgSys.html";
+}
+    </script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .btn-update {
+            background-color: purple;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            border-radius: 8px;
+        }
+
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .close {
+            align-self: flex-end;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        input, select {
+            width: 100%;
+            margin: 5px 0;
+            padding: 8px;
+        }
+
+        button {
+            background-color: purple;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+    </style>
+
+</body>
+</html>

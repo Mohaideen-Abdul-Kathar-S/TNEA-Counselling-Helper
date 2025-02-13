@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engineering Departments</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Poppins", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #e3f2fd, #90caf9);
+            color: #333;
+        }
+
+        header {
+            background-color: #0d47a1;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        main {
+            padding: 20px;
+            max-width: 900px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #0d47a1;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 18px;
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #0d47a1;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background: #0d47a1;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #1565c0;
+        }
+
+        .info {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            background-color: #e3f2fd;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .info h2 {
+            color: #0d47a1;
+            margin-top: 0;
+            font-size: 24px;
+        }
+
+        .info p {
+            margin: 10px 0;
+            line-height: 1.6;
+            font-size: 16px;
+            color: #444;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #0d47a1;
+            color: white;
+            font-size: 14px;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            select, button {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .info p {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>Engineering Departments Explorer</header>
+    <button onclick="goBack()" class="btn mt-3" style="width: 150px; background-color: red; color: white; border: none; padding: 10px; border-radius: 5px;">
+        Back
+    </button>
+    <main>
+        <h1>Find Your Dream Department</h1>
+        <label for="department">Select a Department:</label>
+        <select id="department">
+            <option value="">--Select--</option>
+            <option value="CSE">Computer Science and Engineering (CSE)</option>
+            <option value="CSD">Computer Science and Design (CSD)</option>
+            <option value="ECE">Electronics and Communication Engineering (ECE)</option>
+            <option value="EEE">Electrical and Electronics Engineering (EEE)</option>
+            <option value="EIE">Electronics and Instrumentation Engineering (EIE)</option>
+            <option value="MECH">Mechanical Engineering (MECH)</option>
+            <option value="IT">Information Technology (IT)</option>
+            <option value="CHEM">Chemical Engineering (CHEM)</option>
+            <option value="MTS">Material Science and Engineering (MTS)</option>
+            <option value="AIML">Artificial Intelligence and Machine Learning (AIML)</option>
+            <option value="AIDS">Artificial Intelligence and Data Science (AIDS)</option>
+            <option value="AUTO">Automobile Engineering (AUTO)</option>
+            <option value="CIVIL">Civil Engineering (CIVIL)</option>
+        </select>
+        <button onclick="displayInfo()">Explore</button>
+
+        <div id="courseInfo" class="info"></div>
+    </main>
+
+    <footer>
+        &copy; TNEA Counselling Helper | All Rights Reserved
+    </footer>
+
+    <script>
+        const departmentData = {
+            "Computer Science and Engineering (CSE)": {
+                about: "CSE focuses on programming, algorithms, and system design to solve computational problems.",
+                roles: "Software Developer, Data Scientist, System Analyst, etc.",
+                opportunities: "Jobs in IT services, product-based companies, and startups.",
+                introduced: "Course introduced in 1980.",
+                outcome: "Graduates excel in software development, data science, and IT solutions."
+            },
+            "CSD": {
+                about: "CSD integrates computing and design principles for innovative software solutions.",
+                roles: "UX Designer, Software Engineer, AR/VR Developer, etc.",
+                opportunities: "Roles in technology-driven companies and creative industries.",
+                introduced: "Course introduced in 2015.",
+                outcome: "Graduates excel in combining creativity and computing."
+            },
+            "ECE": {
+                about: "ECE emphasizes electronic devices, circuits, and communication systems.",
+                roles: "Embedded Engineer, Network Engineer, VLSI Designer, etc.",
+                opportunities: "Jobs in telecom, electronics manufacturing, and R&D sectors.",
+                introduced: "Course introduced in 1975.",
+                outcome: "Graduates excel in electronics and communication technology."
+            },
+            "EEE": {
+                about: "EEE focuses on electrical systems, power generation, and control systems.",
+                roles: "Power System Engineer, Electrical Design Engineer, etc.",
+                opportunities: "Opportunities in power plants, industries, and renewable energy.",
+                introduced: "Course introduced in 1970.",
+                outcome: "Graduates excel in electrical engineering and power systems."
+            },
+            "EIE": {
+                about: "EIE specializes in instrumentation, control systems, and automation.",
+                roles: "Control Engineer, Automation Specialist, etc.",
+                opportunities: "Roles in manufacturing, aerospace, and process industries.",
+                introduced: "Course introduced in 1985.",
+                outcome: "Graduates excel in instrumentation and control technologies."
+            },
+            "MECH": {
+                about: "MECH covers mechanical systems, manufacturing processes, and robotics.",
+                roles: "Mechanical Engineer, CAD Designer, Product Developer, etc.",
+                opportunities: "Jobs in automotive, aerospace, and heavy machinery industries.",
+                introduced: "Course introduced in 1965.",
+                outcome: "Graduates excel in mechanical design and engineering."
+            },
+            "IT": {
+                about: "IT focuses on networking, database systems, and web technologies.",
+                roles: "IT Consultant, Database Administrator, Web Developer, etc.",
+                opportunities: "Roles in IT infrastructure, cloud computing, and software services.",
+                introduced: "Course introduced in 1995.",
+                outcome: "Graduates excel in IT solutions and enterprise systems."
+            },
+            "CHEM": {
+                about: "CHEM applies chemical principles in industrial processes and materials.",
+                roles: "Process Engineer, Quality Analyst, Chemical Scientist, etc.",
+                opportunities: "Jobs in pharmaceuticals, petrochemicals, and environmental engineering.",
+                introduced: "Course introduced in 1980.",
+                outcome: "Graduates excel in chemical process engineering and research."
+            },
+            "MTS": {
+                about: "MTS focuses on materials science, testing, and advanced manufacturing techniques.",
+                roles: "Material Scientist, R&D Engineer, Quality Control Analyst, etc.",
+                opportunities: "Roles in aerospace, automotive, and advanced materials industries.",
+                introduced: "Course introduced in 1990.",
+                outcome: "Graduates excel in material innovation and applications."
+            },
+            "AIML": {
+                about: "AIML emphasizes artificial intelligence and machine learning applications.",
+                roles: "AI Engineer, Data Scientist, NLP Specialist, etc.",
+                opportunities: "Jobs in AI startups, research labs, and big tech companies.",
+                introduced: "Course introduced in 2020.",
+                outcome: "Graduates excel in AI-based technologies and data analytics."
+            },
+            "AIDS": {
+                about: "AIDS focuses on artificial intelligence, data analysis, and decision-making.",
+                roles: "Data Analyst, AI Researcher, Predictive Analyst, etc.",
+                opportunities: "Roles in data-driven organizations and analytics firms.",
+                introduced: "Course introduced in 2021.",
+                outcome: "Graduates excel in data-driven AI applications."
+            },
+            "AUTO": {
+                about: "AUTO focuses on automotive systems, manufacturing, and automation.",
+                roles: "Automotive Engineer, Design Engineer, Maintenance Specialist, etc.",
+                opportunities: "Jobs in automotive companies and robotics industries.",
+                introduced: "Course introduced in 1978.",
+                outcome: "Graduates excel in automotive innovation and design."
+            },
+            "CIVIL": {
+                about: "CIVIL focuses on construction, infrastructure, and urban development.",
+                roles: "Civil Engineer, Structural Analyst, Urban Planner, etc.",
+                opportunities: "Jobs in construction companies, government projects, and consultancy.",
+                introduced: "Course introduced in 1960.",
+                outcome: "Graduates excel in civil engineering and infrastructure planning."
+            }
+        };
+        
+
+        function displayInfo() {
+            const department = document.getElementById("department").value;
+            const infoDiv = document.getElementById("courseInfo");
+
+            if (department && departmentData[department]) {
+                const data = departmentData[department];
+                infoDiv.innerHTML = `
+                    <h2>${document.querySelector(`#department option[value="${department}"]`).textContent}</h2>
+                    <p><strong>About the Course:</strong> ${data.about}</p>
+                    <p><strong>Roles in Job:</strong> ${data.roles}</p>
+                    <p><strong>Job Opportunities:</strong> ${data.opportunities}</p>
+                    <p><strong>Course Introduced Year:</strong> ${data.introduced}</p>
+                    <p><strong>Outcome of the Course:</strong> ${data.outcome}</p>
+                `;
+                infoDiv.style.display = "block";
+            } else {
+                infoDiv.innerHTML = "<p>Please select a valid department.</p>";
+                infoDiv.style.display = "block";
+            }
+        }
+        function goBack() {
+            window.location.href = "/ckl.html";
+        }
+    </script>
+</body>
+</html>
